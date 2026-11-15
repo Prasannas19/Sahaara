@@ -270,7 +270,7 @@ Sahaara adheres strictly to healthcare least-privilege security principles:
 
 1. **Clone Repository:**
    ```bash
-   git clone https://github.com/your-org/sahaara.git
+   git clone https://github.com/Prasannas19/Sahaara.git
    cd sahaara
    ```
 

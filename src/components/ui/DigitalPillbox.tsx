@@ -89,7 +89,7 @@ export const DigitalPillbox: React.FC<DigitalPillboxProps> = ({ slots, onTakeDos
           return (
             <div
               key={comp.id}
-              className={`rounded-[18px] bg-white border-2 transition-all shadow-xs flex flex-col justify-between overflow-hidden ${
+              className={`rounded-[18px] bg-white border-2 transition-all shadow-xs flex flex-col justify-between overflow-hidden min-w-0 ${
                 hasOverdue
                   ? 'border-[#E8B968] ring-2 ring-[#E8B968]/20'
                   : allTaken
@@ -98,33 +98,33 @@ export const DigitalPillbox: React.FC<DigitalPillboxProps> = ({ slots, onTakeDos
               }`}
             >
               {/* Compartment Header */}
-              <div className={`p-3.5 border-b flex items-center justify-between ${comp.bgHeader} ${comp.borderHeader}`}>
-                <div className="flex items-center gap-2">
+              <div className={`p-3.5 border-b flex items-center justify-between gap-2 min-w-0 ${comp.bgHeader} ${comp.borderHeader}`}>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
                   <Icon className={`w-5 h-5 shrink-0 ${comp.iconColor}`} />
-                  <div>
-                    <h4 className="text-sm font-extrabold text-[#173F35] font-heading leading-tight">
+                  <div className="min-w-0">
+                    <h4 className="text-sm font-extrabold text-[#173F35] font-heading leading-tight truncate">
                       {comp.label}
                     </h4>
-                    <p className="text-[10px] text-[#52605C] font-semibold">{comp.timeRange}</p>
+                    <p className="text-[10px] text-[#52605C] font-semibold truncate">{comp.timeRange}</p>
                   </div>
                 </div>
 
                 {allTaken ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#DCE9DF] text-[#173F35] text-[10px] font-bold">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-[6px] bg-[#DCE9DF] text-[#173F35] text-[10px] font-bold shrink-0">
                     <CheckCircle2 className="w-3 h-3" />
                     <span>Done</span>
                   </span>
                 ) : comp.slots.length === 0 ? (
-                  <span className="text-[10px] text-[#52605C] font-medium">Empty</span>
+                  <span className="text-[10px] text-[#52605C] font-medium shrink-0">Empty</span>
                 ) : (
-                  <span className="text-[11px] font-bold text-[#173F35] bg-white px-2 py-0.5 rounded-[6px] border border-[#DCE9DF]">
+                  <span className="text-[11px] font-bold text-[#173F35] bg-white px-2 py-0.5 rounded-[6px] border border-[#DCE9DF] shrink-0">
                     {comp.slots.length} pill{comp.slots.length === 1 ? '' : 's'}
                   </span>
                 )}
               </div>
 
               {/* Compartment Body */}
-              <div className="p-3.5 space-y-3 flex-1 flex flex-col justify-start">
+              <div className="p-3.5 space-y-3 flex-1 flex flex-col justify-start min-w-0">
                 {comp.slots.length === 0 ? (
                   <div className="py-6 text-center text-xs text-[#52605C] italic">
                     No medications due in this period
@@ -138,7 +138,7 @@ export const DigitalPillbox: React.FC<DigitalPillboxProps> = ({ slots, onTakeDos
                     return (
                       <div
                         key={slot.slotId}
-                        className={`p-3 rounded-[12px] border transition-all text-left space-y-2 ${
+                        className={`p-3 rounded-[12px] border transition-all text-left space-y-2 overflow-hidden min-w-0 ${
                           isTaken
                             ? 'bg-[#EEF4EF]/70 border-[#DCE9DF] opacity-80'
                             : isOverdue
@@ -148,19 +148,27 @@ export const DigitalPillbox: React.FC<DigitalPillboxProps> = ({ slots, onTakeDos
                             : 'bg-[#F8F7F1] border-[#DCE9DF]'
                         }`}
                       >
-                        <div className="flex items-start justify-between gap-1">
-                          <div>
-                            <div className="font-bold text-xs text-[#173F35] flex items-center gap-1.5">
-                              <span className="px-1.5 py-0.5 rounded bg-white border border-[#DCE9DF] text-[10px]">
+                        <div className="flex flex-wrap items-start justify-between gap-1.5 min-w-0">
+                          <div className="min-w-0 flex-1">
+                            <div className="font-bold text-xs text-[#173F35] flex items-center gap-1.5 flex-wrap">
+                              <span className="px-1.5 py-0.5 rounded bg-white border border-[#DCE9DF] text-[10px] shrink-0 font-mono">
                                 {slot.scheduledTimeStr}
                               </span>
-                              <span className="truncate max-w-[130px]">{slot.medication.name}</span>
+                              <span className="truncate max-w-full font-bold text-xs text-[#173F35]" title={slot.medication.name}>
+                                {slot.medication.name}
+                              </span>
                             </div>
-                            <p className="text-[11px] text-[#52605C] mt-0.5">
+                            <p className="text-[11px] text-[#52605C] mt-0.5 truncate">
                               {slot.medication.dosage || 'Prescribed dose'}
                             </p>
                           </div>
-                          <StatusBadge status={slot.status} size="sm" />
+                          <div className="shrink-0 max-w-full">
+                            <StatusBadge
+                              status={slot.status}
+                              size="sm"
+                              labelOverride={slot.status === 'overdue' ? 'Overdue' : undefined}
+                            />
+                          </div>
                         </div>
 
                         {slot.medication.instructions && (

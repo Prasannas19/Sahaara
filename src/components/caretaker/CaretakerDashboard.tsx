@@ -17,6 +17,7 @@ import {
   CheckSquare,
   Users,
   Bell,
+  AlertTriangle,
 } from 'lucide-react';
 import type {
   Member,
@@ -59,6 +60,7 @@ import { subscribeToCareActivities } from '../../services/activityService';
 import { subscribeToReminderLogs } from '../../services/notificationService';
 import { subscribeToCircleMembers } from '../../services/circleService';
 import { seedDemoCareRoutine } from '../../services/demoService';
+import { generateMedicationReportCSV, triggerCSVDownload } from '../../services/reportService';
 import { Button } from '../ui/Button';
 import { Card } from '../ui/Card';
 import { Modal } from '../ui/Modal';
@@ -84,6 +86,35 @@ type CaretakerTab =
   | 'reports'
   | 'notifications'
   | 'audit';
+
+const DEFAULT_CHECKLIST_ITEMS = [
+  { id: '1', text: 'Bring morning blood pressure & glycemic logbook', done: true },
+  { id: '2', text: 'Review potential side effects with Dr. Sharma', done: false },
+  { id: '3', text: 'Check if Metformin prescription needs refill renewal', done: false },
+  { id: '4', text: 'Confirm upcoming laboratory ECG appointment date', done: false },
+];
+
+function getInitialChecklist(circleId?: string) {
+  if (!circleId || typeof window === 'undefined') return DEFAULT_CHECKLIST_ITEMS;
+  try {
+    const stored = localStorage.getItem(`sahaara_doctor_checklist_${circleId}`);
+    if (stored) {
+      const parsed = JSON.parse(stored);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        const merged = [...parsed];
+        for (const def of DEFAULT_CHECKLIST_ITEMS) {
+          if (!merged.some((m) => m.text.toLowerCase() === def.text.toLowerCase())) {
+            merged.unshift(def);
+          }
+        }
+        return merged;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to load checklist from storage:', e);
+  }
+  return DEFAULT_CHECKLIST_ITEMS;
+}
 
 export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
   member,
@@ -143,15 +174,23 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
   const [ackNotes, setAckNotes] = useState('');
   const [ackSubmitting, setAckSubmitting] = useState(false);
   const [seedingDemo, setSeedingDemo] = useState(false);
+  const [medsLoading, setMedsLoading] = useState(true);
+  const [eventsLoading, setEventsLoading] = useState(true);
+  const [alertsLoading, setAlertsLoading] = useState(true);
 
   // Doctor Visit Preparation Checklist
-  const [checklistItems, setChecklistItems] = useState([
-    { id: '1', text: 'Bring morning blood pressure & glycemic logbook', done: true },
-    { id: '2', text: 'Review potential side effects with Dr. Sharma', done: false },
-    { id: '3', text: 'Check if Metformin prescription needs refill renewal', done: false },
-    { id: '4', text: 'Confirm upcoming laboratory ECG appointment date', done: false },
-  ]);
+  const [checklistItems, setChecklistItems] = useState(() => getInitialChecklist(member.circleId));
   const [newChecklistText, setNewChecklistText] = useState('');
+
+  const updateAndPersistChecklist = (items: typeof checklistItems) => {
+    setChecklistItems(items);
+    if (!member.circleId) return;
+    try {
+      localStorage.setItem(`sahaara_doctor_checklist_${member.circleId}`, JSON.stringify(items));
+    } catch (err) {
+      console.error('Failed to persist checklist items:', err);
+    }
+  };
 
   // Filter for History
   const [historyFilterStatus, setHistoryFilterStatus] = useState<string>('all');
@@ -161,14 +200,17 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
 
     const unsubMeds = subscribeToMedications(member.circleId, (meds) => {
       setMedications(meds);
+      setMedsLoading(false);
     });
 
     const unsubEvents = subscribeToTodayDoseEvents(member.circleId, (events) => {
       setDoseEvents(events);
+      setEventsLoading(false);
     });
 
     const unsubAlerts = subscribeToCareAlerts(member.circleId, (alerts) => {
       setCareAlerts(alerts);
+      setAlertsLoading(false);
     });
 
     const unsubAppts = subscribeToAppointments(member.circleId, (appts) => {
@@ -203,11 +245,30 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
   const takenCount = slots.filter((s) => s.status === 'taken').length;
   const pendingCount = slots.filter((s) => s.status === 'pending' || s.status === 'scheduled').length;
   const activeMedsCount = medications.filter((m) => m.active).length;
-  const activeAlerts = careAlerts.filter((a) => a.status === 'active' || a.status === 'escalated');
+
+  // Reconcile Care Handoff alerts against authoritative dose events: Confirmed taken/skipped doses never stay active
+  const activeAlerts = careAlerts.filter((a) => {
+    if (a.status !== 'active' && a.status !== 'escalated') return false;
+    const matchingEvent = doseEvents.find((e) => e.eventId === a.doseEventId);
+    if (matchingEvent && (matchingEvent.status === 'taken' || matchingEvent.status === 'skipped')) {
+      return false;
+    }
+    return true;
+  });
   const resolvedAlerts = careAlerts.filter((a) => a.status === 'resolved');
 
+  // Low stock warning calculation (< 7 days or <= 10 pills)
+  const lowStockMeds = medications.filter((m) => {
+    if (!m.active || m.stockQuantity === undefined) return false;
+    const dosesPerDay = m.scheduledTimes.length;
+    const daysSupply = dosesPerDay > 0 ? Math.floor(m.stockQuantity / dosesPerDay) : 0;
+    return daysSupply <= 7 || m.stockQuantity <= 10;
+  });
+
   // Automatic overdue alert synchronisation (accountable follow-up creation)
+  // Gated: NEVER run while subscriptions are still loading initial data from Firestore
   useEffect(() => {
+    if (medsLoading || eventsLoading || alertsLoading) return;
     if (!member.circleId || !circle || slots.length === 0) return;
     const elderName = circle.elderName || 'Elder';
     syncOverdueDoseAlerts({
@@ -217,7 +278,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
       primaryCaretakerId: member.memberId,
       existingAlerts: careAlerts,
     });
-  }, [member.circleId, circle, slots, careAlerts, member.memberId]);
+  }, [medsLoading, eventsLoading, alertsLoading, member.circleId, circle, slots, careAlerts, member.memberId]);
 
   const handleSeedDemo = async () => {
     if (!member.circleId) return;
@@ -488,41 +549,15 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
 
   // CSV Report Generator (Product Differentiator)
   const exportMedicationReportCSV = () => {
-    if (!circle) return;
-    const elderName = circle.elderName || 'Elder';
-    const headers = ['Date', 'Scheduled Time', 'Medication', 'Dosage', 'Status', 'Recorded By', 'Notes'];
-    const rows = slots.map((s) => [
-      new Date(s.scheduledAt).toLocaleDateString(),
-      s.scheduledTimeStr,
-      `"${s.medication.name.replace(/"/g, '""')}"`,
-      `"${(s.medication.dosage || '').replace(/"/g, '""')}"`,
-      s.status.toUpperCase(),
-      s.event?.resolvedBy || 'Unresolved',
-      `"${(s.event?.notes || s.medication.instructions || '').replace(/"/g, '""')}"`,
-    ]);
-
-    const csvContent = [
-      `# Sahaara Medication Adherence Report - ${elderName}`,
-      `# Care Circle ID: ${circle.circleId}`,
-      `# Generated On: ${new Date().toISOString()}`,
-      `# Adherence Score: ${slots.length > 0 ? Math.round((takenCount / slots.length) * 100) : 0}%`,
-      '',
-      headers.join(','),
-      ...rows.map((r) => r.join(',')),
-    ].join('\n');
-
-    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.setAttribute('href', url);
-    link.setAttribute(
-      'download',
-      `Sahaara_Report_${elderName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`
-    );
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    const elderName = circle?.elderName || 'Elder';
+    const circleId = member.circleId || 'N/A';
+    const csvContent = generateMedicationReportCSV({
+      elderName,
+      circleId,
+      slots,
+    });
+    const filename = `Sahaara_Report_${elderName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.csv`;
+    triggerCSVDownload(filename, csvContent);
   };
 
   const toggleDayOfWeek = (day: number) => {
@@ -723,6 +758,30 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
               <p className="text-xs text-[#9A3412]/90">
                 Scheduled doses were unconfirmed or flagged by the elder. In accordance with the Sahaara Care Handoff Protocol, accountable primary caretaker resolution is required.
               </p>
+            </div>
+          )}
+
+          {/* LOW MEDICATION STOCK WARNING BANNER (IF ANY) */}
+          {lowStockMeds.length > 0 && (
+            <div className="p-5 rounded-[20px] bg-[#FFF8EE] border-2 border-[#E8B968] flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-left">
+              <div className="flex items-center gap-3">
+                <AlertTriangle className="w-6 h-6 text-[#9A3412] shrink-0" />
+                <div>
+                  <h4 className="text-sm font-bold text-[#9A3412]">
+                    Low Stock Alert ({lowStockMeds.length} prescription{lowStockMeds.length === 1 ? '' : 's'} need refill)
+                  </h4>
+                  <p className="text-xs text-[#52605C] mt-0.5">
+                    {lowStockMeds.map((m) => `${m.name}: ${m.stockQuantity} pills remaining`).join(' • ')}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveTab('medications')}
+                className="px-3.5 py-2 rounded-[8px] bg-[#173F35] text-white text-xs font-bold hover:bg-[#1f5246] transition-colors shrink-0 cursor-pointer self-start sm:self-auto"
+              >
+                View &amp; Refill
+              </button>
             </div>
           )}
 
@@ -1199,7 +1258,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
                     type="checkbox"
                     checked={item.done}
                     onChange={() =>
-                      setChecklistItems(
+                      updateAndPersistChecklist(
                         checklistItems.map((i) => (i.id === item.id ? { ...i, done: !i.done } : i))
                       )
                     }
@@ -1218,18 +1277,38 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
                 placeholder="Add custom question or item for doctor visit..."
                 value={newChecklistText}
                 onChange={(e) => setNewChecklistText(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const trimmed = newChecklistText.trim();
+                    if (!trimmed) return;
+                    if (checklistItems.some((i) => i.text.toLowerCase() === trimmed.toLowerCase())) {
+                      alert('This item already exists in your doctor checklist.');
+                      return;
+                    }
+                    updateAndPersistChecklist([
+                      ...checklistItems,
+                      { id: `custom_${Date.now()}`, text: trimmed, done: false },
+                    ]);
+                    setNewChecklistText('');
+                  }
+                }}
                 className="flex-1 px-3 py-2 rounded-[8px] bg-white border border-[#DCE9DF] text-xs focus:outline-none"
               />
               <button
                 type="button"
                 onClick={() => {
-                  if (newChecklistText.trim()) {
-                    setChecklistItems([
-                      ...checklistItems,
-                      { id: Date.now().toString(), text: newChecklistText.trim(), done: false },
-                    ]);
-                    setNewChecklistText('');
+                  const trimmed = newChecklistText.trim();
+                  if (!trimmed) return;
+                  if (checklistItems.some((i) => i.text.toLowerCase() === trimmed.toLowerCase())) {
+                    alert('This item already exists in your doctor checklist.');
+                    return;
                   }
+                  updateAndPersistChecklist([
+                    ...checklistItems,
+                    { id: `custom_${Date.now()}`, text: trimmed, done: false },
+                  ]);
+                  setNewChecklistText('');
                 }}
                 className="px-3.5 py-2 rounded-[8px] bg-[#173F35] text-white text-xs font-bold cursor-pointer"
               >

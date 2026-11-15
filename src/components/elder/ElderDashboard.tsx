@@ -147,9 +147,10 @@ export const ElderDashboard: React.FC<ElderDashboardProps> = ({ member, circle }
         caretakerName: member.name,
       });
       setAnnouncement('Demonstration care routine loaded successfully!');
-    } catch (err) {
+    } catch (err: unknown) {
       console.error('Error seeding demo:', err);
-      setAnnouncement('Could not load demo routine. Please try again.');
+      const msg = err instanceof Error ? err.message : 'Please try again.';
+      setAnnouncement(`Could not load demo routine: ${msg}`);
     } finally {
       setSeedingDemo(false);
     }

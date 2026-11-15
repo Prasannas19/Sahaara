@@ -337,12 +337,12 @@ export const LandingPage: React.FC = () => {
                   </div>
                   <div className="px-3 py-1.5 bg-[#EEF4EF] border border-[#DCE9DF] rounded-[8px] text-xs font-bold text-[#173F35]">
                     {previewDoseStatus === 'taken'
-                      ? '1 of 2 Complete (50%)'
+                      ? '1 of 1 Complete (100%)'
                       : previewDoseStatus === 'skipped'
-                      ? '0 of 2 Complete (1 Skipped)'
+                      ? '0 of 1 Complete (1 Skipped)'
                       : previewDoseStatus === 'uncertain'
-                      ? '0 of 2 Complete (Needs Check)'
-                      : '0 of 2 Complete (0%)'}
+                      ? '0 of 1 Complete (Needs Check)'
+                      : '0 of 1 Complete (0%)'}
                   </div>
                 </div>
 

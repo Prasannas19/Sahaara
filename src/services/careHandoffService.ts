@@ -1,6 +1,7 @@
 import {
   collection,
   doc,
+  getDoc,
   setDoc,
   updateDoc,
   query,
@@ -30,6 +31,10 @@ export async function syncOverdueDoseAlerts(params: {
 
   for (const slot of slots) {
     if (slot.status === 'overdue' || slot.status === 'uncertain') {
+      // Confirmed taken or skipped doses must never become overdue alerts
+      if (slot.event && (slot.event.status === 'taken' || slot.event.status === 'skipped')) {
+        continue;
+      }
       if (!existingMap.has(slot.slotId)) {
         try {
           const alert = await createCareAlert({
@@ -41,8 +46,10 @@ export async function syncOverdueDoseAlerts(params: {
             elderName,
             primaryCaretakerId,
           });
-          createdAlerts.push(alert);
-          existingMap.add(slot.slotId);
+          if (alert) {
+            createdAlerts.push(alert);
+            existingMap.add(slot.slotId);
+          }
         } catch (err) {
           console.error('Failed to auto-sync overdue care alert:', err);
         }
@@ -62,9 +69,32 @@ export async function createCareAlert(params: {
   elderName: string;
   primaryCaretakerId?: string;
   backupCaretakerId?: string;
-}): Promise<CareAlert> {
+}): Promise<CareAlert | null> {
   const alertId = `${params.circleId}_${params.doseEventId}`;
   const alertRef = doc(db, 'careAlerts', alertId);
+
+  // 1. Reconcile with authoritative dose event: Confirmed taken/skipped doses NEVER trigger alerts
+  try {
+    const doseSnap = await getDoc(doc(db, 'doseEvents', params.doseEventId));
+    if (doseSnap.exists()) {
+      const doseData = doseSnap.data();
+      if (doseData?.status === 'taken' || doseData?.status === 'skipped') {
+        return null;
+      }
+    }
+  } catch {
+    // Expected when doseEvent document does not exist yet
+  }
+
+  // 2. Check if alert already exists in Firestore: Never recreate or overwrite existing/resolved alerts
+  try {
+    const alertSnap = await getDoc(alertRef);
+    if (alertSnap.exists()) {
+      return alertSnap.data() as CareAlert;
+    }
+  } catch {
+    // Expected when alert document does not exist yet
+  }
 
   const alertData: CareAlert = {
     alertId,
@@ -81,14 +111,10 @@ export async function createCareAlert(params: {
     createdAt: new Date().toISOString(),
   };
 
-  await setDoc(
-    alertRef,
-    {
-      ...alertData,
-      createdAtServer: serverTimestamp(),
-    },
-    { merge: true }
-  );
+  await setDoc(alertRef, {
+    ...alertData,
+    createdAtServer: serverTimestamp(),
+  });
 
   await recordCareActivity({
     circleId: params.circleId,
