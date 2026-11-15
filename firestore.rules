@@ -1,0 +1,141 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function callerMember() {
+      return get(/databases/$(database)/documents/members/$(request.auth.uid)).data;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Circles collection
+    match /circles/{circleId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn()
+        && request.resource.data.circleId == circleId
+        && request.resource.data.elderName is string
+        && request.resource.data.passcodeHash is string;
+      allow update, delete: if false;
+    }
+
+    // Members collection
+    match /members/{uid} {
+      allow read: if isSignedIn() && (
+        request.auth.uid == uid ||
+        callerMember().circleId == resource.data.circleId
+      );
+      allow create: if isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.data.memberId == uid
+        && request.resource.data.role in ['elder', 'caretaker', 'family']
+        && request.resource.data.circleId is string;
+      allow update: if isSignedIn()
+        && request.auth.uid == uid
+        && request.resource.data.role == resource.data.role;
+      allow delete: if false;
+    }
+
+    // Medications collection
+    match /medications/{medicationId} {
+      allow get: if isSignedIn()
+        && callerMember().circleId == resource.data.circleId;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == request.resource.data.circleId
+        && request.resource.data.name is string
+        && request.resource.data.scheduledTimes is list;
+      allow update: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == resource.data.circleId
+        && callerMember().circleId == request.resource.data.circleId;
+      allow delete: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == resource.data.circleId;
+    }
+
+    // Dose Events collection
+    match /doseEvents/{eventId} {
+      allow get: if isSignedIn()
+        && callerMember().circleId == resource.data.circleId;
+      allow list: if isSignedIn();
+      allow create, update: if isSignedIn()
+        && callerMember().role in ['elder', 'caretaker']
+        && callerMember().circleId == request.resource.data.circleId
+        && request.resource.data.status in ['taken', 'skipped', 'uncertain', 'overdue', 'unconfirmed'];
+      allow delete: if false;
+    }
+
+    // Appointments collection (Phase 2)
+    match /appointments/{appointmentId} {
+      allow get: if isSignedIn()
+        && callerMember().circleId == resource.data.circleId;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == request.resource.data.circleId
+        && request.resource.data.title is string
+        && request.resource.data.date is string;
+      allow update: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == resource.data.circleId
+        && callerMember().circleId == request.resource.data.circleId;
+      allow delete: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == resource.data.circleId;
+    }
+
+    // Care Handoff Alerts collection (Phase 2)
+    match /careAlerts/{alertId} {
+      allow get: if isSignedIn()
+        && callerMember().circleId == resource.data.circleId;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn()
+        && callerMember().role in ['caretaker', 'elder']
+        && callerMember().circleId == request.resource.data.circleId;
+      allow update: if isSignedIn()
+        && callerMember().role == 'caretaker'
+        && callerMember().circleId == resource.data.circleId;
+      allow delete: if false;
+    }
+
+    // Care Activities (Audit Trail) collection (Phase 2)
+    match /careActivities/{activityId} {
+      allow get: if isSignedIn()
+        && callerMember().circleId == resource.data.circleId;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn()
+        && callerMember().circleId == request.resource.data.circleId
+        && request.resource.data.details is string;
+      allow update, delete: if false; // Immutable audit trail
+    }
+
+    // Reminder Logs collection (Phase 2)
+    match /reminderLogs/{reminderId} {
+      allow get: if isSignedIn()
+        && callerMember().circleId == resource.data.circleId;
+      allow list: if isSignedIn();
+      allow create: if isSignedIn()
+        && callerMember().circleId == request.resource.data.circleId;
+      allow update, delete: if false;
+    }
+
+    // Contact Inquiries collection (Phase 2)
+    match /contactInquiries/{inquiryId} {
+      allow create: if request.resource.data.name is string
+        && request.resource.data.email is string
+        && request.resource.data.subject is string
+        && request.resource.data.message is string
+        && request.resource.data.message.size() >= 10;
+      allow read, update: if isSignedIn()
+        && (callerMember().role in ['caretaker', 'admin'] || callerMember().isAdmin == true);
+      allow delete: if false;
+    }
+  }
+}
