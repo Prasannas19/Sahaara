@@ -282,12 +282,12 @@ Sahaara adheres strictly to healthcare least-privilege security principles:
 3. **Configure Environment:**
    Create a `.env` file (or use the pre-configured Firebase project settings):
    ```env
-   VITE_FIREBASE_API_KEY=AIzaSyATzUODpiaurvfz5pBpZgoYxnb3hlAv-V4
-   VITE_FIREBASE_AUTH_DOMAIN=sahaara-5c835.firebaseapp.com
-   VITE_FIREBASE_PROJECT_ID=sahaara-5c835
-   VITE_FIREBASE_STORAGE_BUCKET=sahaara-5c835.firebasestorage.app
-   VITE_FIREBASE_MESSAGING_SENDER_ID=822055235986
-   VITE_FIREBASE_APP_ID=1:822055235986:web:98da043b1c09d42292914b
+   VITE_FIREBASE_API_KEY=your-api-key
+   VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+   VITE_FIREBASE_PROJECT_ID=your-project-id
+   VITE_FIREBASE_STORAGE_BUCKET=your-project.firebasestorage.app
+   VITE_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+   VITE_FIREBASE_APP_ID=your-app-id
    ```
 
 4. **Run Development Server:**
