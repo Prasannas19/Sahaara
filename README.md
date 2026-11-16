@@ -27,11 +27,11 @@ The heart of Sahaara is the **Care Handoff Protocol**—our core differentiator 
 
 | Landing Page | Caretaker Dashboard |
 | :---: | :---: |
-| ![Landing page with interactive medication demo](1-01-landing-page.png) | ![Caretaker dashboard with adherence summary and digital pillbox](10-10-caretaker-dashboard.png) |
+| ![Landing page with interactive medication demo](docs/screenshots/1-01-landing-page.png) | ![Caretaker dashboard with adherence summary and digital pillbox](docs/screenshots/10-10-caretaker-dashboard.png) |
 
 | Care Handoff Follow-ups | Elder View Simulation |
 | :---: | :---: |
-| ![Accountable care handoff follow-ups](12-12-care-handoff.png) | ![Simulated elder interface preview](13-13-elder-view-simulation.png) |
+| ![Accountable care handoff follow-ups](docs/screenshots/12-12-care-handoff.png) | ![Simulated elder interface preview](docs/screenshots/13-13-elder-view-simulation.png) |
 
 ---
 
