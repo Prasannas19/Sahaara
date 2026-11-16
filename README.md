@@ -5,6 +5,48 @@
 
 ---
 
+---
+
+## Application Screenshots
+
+> Captured from the live deployment at [sahaara-5c835.web.app](https://sahaara-5c835.web.app) using the built-in demo care circle (Rose / Arjun / Meena). The demo Circle ID is intentionally blurred.
+
+### Public Website
+
+| Landing Page & Interactive Demo | How Sahaara Works |
+| :---: | :---: |
+| ![Landing page with interactive medication demo](docs/screenshots/01-landing-page.png) | ![Three-step care coordination flow](docs/screenshots/02-how-it-works.png) |
+
+| Platform Capabilities | Role-Specific Interfaces |
+| :---: | :---: |
+| ![Comprehensive platform capabilities](docs/screenshots/03-platform-features.png) | ![Elder, caretaker and family role interfaces](docs/screenshots/04-role-interfaces.png) |
+
+| Accessibility Architecture | Secure Sign In |
+| :---: | :---: |
+| ![Elder-centric accessibility features](docs/screenshots/05-accessibility.png) | ![Role-based secure sign in](docs/screenshots/06-sign-in.png) |
+
+| Create a Care Circle | Help Center & FAQ |
+| :---: | :---: |
+| ![Care circle registration with generated passcode](docs/screenshots/07-create-care-circle.png) | ![Searchable help center and FAQ](docs/screenshots/08-faq.png) |
+
+### Caretaker Clinical Console
+
+| Overview & Digital Pillbox | Today's Dose Schedule |
+| :---: | :---: |
+| ![Caretaker dashboard with adherence summary and digital pillbox](docs/screenshots/10-caretaker-dashboard.png) | ![Daily dose schedule and upcoming consultations](docs/screenshots/11-dose-schedule.png) |
+
+| Care Handoff Follow-ups | Elder View Simulation |
+| :---: | :---: |
+| ![Accountable care handoff follow-ups](docs/screenshots/12-care-handoff.png) | ![Simulated elder interface preview](docs/screenshots/13-elder-view-simulation.png) |
+
+### Support
+
+| Contact & Support Inquiries |
+| :---: |
+| ![Contact and support inquiry form](docs/screenshots/09-contact-support.png) |
+
+---
+
 ## 1. Project Overview
 
 **Sahaara** (सहारा — *support/solace*) is a healthcare coordination and medication adherence platform built specifically for elderly individuals, primary caretakers, and extended families.
