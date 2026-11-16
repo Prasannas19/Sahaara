@@ -5,48 +5,6 @@
 
 ---
 
----
-
-## Application Screenshots
-
-> Captured from the live deployment at [sahaara-5c835.web.app](https://sahaara-5c835.web.app) using the built-in demo care circle (Rose / Arjun / Meena). The demo Circle ID is intentionally blurred.
-
-### Public Website
-
-| Landing Page & Interactive Demo | How Sahaara Works |
-| :---: | :---: |
-| ![Landing page with interactive medication demo](1-01-landing-page.png) | ![Three-step care coordination flow](2-02-how-it-works.png) |
-
-| Platform Capabilities | Role-Specific Interfaces |
-| :---: | :---: |
-| ![Comprehensive platform capabilities](3-03-platform-features.png) | ![Elder, caretaker and family role interfaces](4-04-role-interfaces.png) |
-
-| Accessibility Architecture | Secure Sign In |
-| :---: | :---: |
-| ![Elder-centric accessibility features](5-05-accessibility.png) | ![Role-based secure sign in](6-06-sign-in.png) |
-
-| Create a Care Circle | Help Center & FAQ |
-| :---: | :---: |
-| ![Care circle registration with generated passcode](7-07-create-care-circle.png) | ![Searchable help center and FAQ](8-08-faq.png) |
-
-### Caretaker Clinical Console
-
-| Overview & Digital Pillbox | Today's Dose Schedule |
-| :---: | :---: |
-| ![Caretaker dashboard with adherence summary and digital pillbox](10-10-caretaker-dashboard.png) | ![Daily dose schedule and upcoming consultations](11-11-dose-schedule.png) |
-
-| Care Handoff Follow-ups | Elder View Simulation |
-| :---: | :---: |
-| ![Accountable care handoff follow-ups](12-12-care-handoff.png) | ![Simulated elder interface preview](13-13-elder-view-simulation.png) |
-
-### Support
-
-| Contact & Support Inquiries |
-| :---: |
-| ![Contact and support inquiry form](9-09-contact-support.png) |
-
----
-
 ## 1. Project Overview
 
 **Sahaara** (सहारा — *support/solace*) is a healthcare coordination and medication adherence platform built specifically for elderly individuals, primary caretakers, and extended families.
@@ -60,6 +18,20 @@
 Sahaara unites the elder, their primary caretaker, and their family into an isolated **Care Circle**. Elders enjoy a calm, ultra-accessible interface with 56px action buttons and audio read-aloud support; caretakers gain a clinical console with prescription schedule management and stock tracking; and families receive peaceful, read-only reassurance.
 
 The heart of Sahaara is the **Care Handoff Protocol**—our core differentiator that replaces passive reminders with human-accountable clinical follow-ups.
+
+---
+
+## Platform Preview
+
+> Captured from the live deployment at [sahaara-5c835.web.app](https://sahaara-5c835.web.app) using the built-in demo care circle (Rose / Arjun / Meena). The demo Circle ID is intentionally blurred.
+
+| Landing Page | Caretaker Dashboard |
+| :---: | :---: |
+| ![Landing page with interactive medication demo](1-01-landing-page.png) | ![Caretaker dashboard with adherence summary and digital pillbox](10-10-caretaker-dashboard.png) |
+
+| Care Handoff Follow-ups | Elder View Simulation |
+| :---: | :---: |
+| ![Accountable care handoff follow-ups](12-12-care-handoff.png) | ![Simulated elder interface preview](13-13-elder-view-simulation.png) |
 
 ---
 
@@ -414,3 +386,4 @@ Sahaara provides real healthcare impact by directly addressing the three pillars
 
 ---
 *Developed for the Google Cloud & Firebase Hackathon 2026.*
+
