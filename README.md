@@ -15,35 +15,35 @@
 
 | Landing Page & Interactive Demo | How Sahaara Works |
 | :---: | :---: |
-| ![Landing page with interactive medication demo](docs/screenshots/01-landing-page.png) | ![Three-step care coordination flow](docs/screenshots/02-how-it-works.png) |
+| ![Landing page with interactive medication demo](1-01-landing-page.png) | ![Three-step care coordination flow](2-02-how-it-works.png) |
 
 | Platform Capabilities | Role-Specific Interfaces |
 | :---: | :---: |
-| ![Comprehensive platform capabilities](docs/screenshots/03-platform-features.png) | ![Elder, caretaker and family role interfaces](docs/screenshots/04-role-interfaces.png) |
+| ![Comprehensive platform capabilities](3-03-platform-features.png) | ![Elder, caretaker and family role interfaces](4-04-role-interfaces.png) |
 
 | Accessibility Architecture | Secure Sign In |
 | :---: | :---: |
-| ![Elder-centric accessibility features](docs/screenshots/05-accessibility.png) | ![Role-based secure sign in](docs/screenshots/06-sign-in.png) |
+| ![Elder-centric accessibility features](5-05-accessibility.png) | ![Role-based secure sign in](6-06-sign-in.png) |
 
 | Create a Care Circle | Help Center & FAQ |
 | :---: | :---: |
-| ![Care circle registration with generated passcode](docs/screenshots/07-create-care-circle.png) | ![Searchable help center and FAQ](docs/screenshots/08-faq.png) |
+| ![Care circle registration with generated passcode](7-07-create-care-circle.png) | ![Searchable help center and FAQ](8-08-faq.png) |
 
 ### Caretaker Clinical Console
 
 | Overview & Digital Pillbox | Today's Dose Schedule |
 | :---: | :---: |
-| ![Caretaker dashboard with adherence summary and digital pillbox](docs/screenshots/10-caretaker-dashboard.png) | ![Daily dose schedule and upcoming consultations](docs/screenshots/11-dose-schedule.png) |
+| ![Caretaker dashboard with adherence summary and digital pillbox](10-10-caretaker-dashboard.png) | ![Daily dose schedule and upcoming consultations](11-11-dose-schedule.png) |
 
 | Care Handoff Follow-ups | Elder View Simulation |
 | :---: | :---: |
-| ![Accountable care handoff follow-ups](docs/screenshots/12-care-handoff.png) | ![Simulated elder interface preview](docs/screenshots/13-elder-view-simulation.png) |
+| ![Accountable care handoff follow-ups](12-12-care-handoff.png) | ![Simulated elder interface preview](13-13-elder-view-simulation.png) |
 
 ### Support
 
 | Contact & Support Inquiries |
 | :---: |
-| ![Contact and support inquiry form](docs/screenshots/09-contact-support.png) |
+| ![Contact and support inquiry form](9-09-contact-support.png) |
 
 ---
 
