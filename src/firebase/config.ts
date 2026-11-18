@@ -1,7 +1,11 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 
-const env = import.meta.env;
+// import.meta.env is injected by Vite in the app build; under plain Node
+// (tests, scripts) fall back to process.env so the same module works with
+// the Firebase emulators.
+const env = (import.meta as unknown as { env?: Record<string, string> }).env ??
+  ((globalThis as { process?: { env?: Record<string, string> } }).process?.env ?? {});
 
 export const firebaseConfig = {
   apiKey: env.VITE_FIREBASE_API_KEY,
