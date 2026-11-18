@@ -321,9 +321,9 @@ export const LandingPage: React.FC = () => {
 
               <div className="bg-white rounded-[24px] shadow-[0_16px_40px_rgba(23,63,53,0.12)] border-2 border-[#DCE9DF] p-6 sm:p-8 space-y-6 text-left">
                 {/* Mock Header with Demo Label */}
-                <div className="flex items-center justify-between pb-4 border-b border-[#DCE9DF]">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-[#DCE9DF]">
                   <div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <span className="text-xs uppercase font-extrabold text-[#52605C] tracking-wider">
                         Today's Schedule &middot; Morning
                       </span>
@@ -331,11 +331,11 @@ export const LandingPage: React.FC = () => {
                         Interactive Demonstration
                       </span>
                     </div>
-                    <h3 className="text-xl font-bold text-[#173F35] font-heading mt-0.5">
+                    <h3 className="text-xl font-bold text-[#173F35] font-heading mt-1.5">
                       Good morning, Rose
                     </h3>
                   </div>
-                  <div className="px-3 py-1.5 bg-[#EEF4EF] border border-[#DCE9DF] rounded-[8px] text-xs font-bold text-[#173F35]">
+                  <div className="self-start shrink-0 px-3 py-1.5 bg-[#EEF4EF] border border-[#DCE9DF] rounded-[8px] text-xs font-bold text-[#173F35]">
                     {previewDoseStatus === 'taken'
                       ? '1 of 1 Complete (100%)'
                       : previewDoseStatus === 'skipped'
@@ -397,7 +397,7 @@ export const LandingPage: React.FC = () => {
                             : 'bg-white hover:bg-[#EEF4EF] text-[#173F35] border border-[#173F35]/30'
                         }`}
                       >
-                        <CheckCircle2 className="w-4 h-4" />
+                        <CheckCircle2 className="w-4 h-4 shrink-0" />
                         <span>Taken</span>
                       </button>
 
@@ -410,7 +410,7 @@ export const LandingPage: React.FC = () => {
                             : 'bg-white hover:bg-[#F2ECEC] text-[#8F2D2D] border border-[#8F2D2D]/30'
                         }`}
                       >
-                        <XCircle className="w-4 h-4" />
+                        <XCircle className="w-4 h-4 shrink-0" />
                         <span>Skipped</span>
                       </button>
 
@@ -423,7 +423,7 @@ export const LandingPage: React.FC = () => {
                             : 'bg-white hover:bg-[#FDF7EB] text-[#875C0B] border border-[#E8B968]'
                         }`}
                       >
-                        <HelpCircle className="w-4 h-4" />
+                        <HelpCircle className="w-4 h-4 shrink-0" />
                         <span>Not Sure</span>
                       </button>
                     </div>
