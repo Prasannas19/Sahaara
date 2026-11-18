@@ -10,7 +10,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@600;700&display=swap" rel="stylesheet">
   </head>
   <body class="bg-warm-ivory text-charcoal antialiased min-h-screen">
-    <div id="root"></div>
+    <div id="root">
+      <!-- Static splash: painted by the browser before the JavaScript arrives,
+           replaced by React as soon as the app mounts. -->
+      <div style="min-height:100vh;background:#F8F7F1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;margin:0;">
+        <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path d="M8 36C8 21.6406 19.6406 10 34 10C37.5 10 40.5 11 40.5 11" stroke="#173F35" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M16 38C16 26.9543 24.9543 18 36 18" stroke="#6C9B8B" stroke-width="4.5" stroke-linecap="round"/>
+          <circle cx="36" cy="18" r="4.5" fill="#173F35"/>
+          <circle cx="14" cy="38" r="3" fill="#E8B968"/>
+        </svg>
+        <p style="font-size:20px;font-weight:700;color:#173F35;margin:16px 0 0;font-family:Manrope,system-ui,sans-serif;">Connecting to Sahaara...</p>
+        <p style="font-size:12px;color:#52605C;margin:4px 0 0;font-family:Inter,system-ui,sans-serif;">Care that connects. Support that matters.</p>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
