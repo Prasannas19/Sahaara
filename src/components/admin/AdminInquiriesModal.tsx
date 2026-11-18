@@ -8,7 +8,7 @@ import {
   updateDoc,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../../firebase/config';
+import { db } from '../../firebase/db';
 import type { ContactInquiry } from '../../types';
 import { Modal } from '../ui/Modal';
 import { Button } from '../ui/Button';
