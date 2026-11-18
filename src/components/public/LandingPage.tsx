@@ -66,9 +66,9 @@ export const LandingPage: React.FC = () => {
       subtitle: 'Shared Private Care Circles',
       icon: Users,
       color: '#6C9B8B',
-      desc: 'Care is not a solo effort. Authorised family members and primary caretakers coordinate collaboratively through a private, passcode-secured Circle.',
+      desc: 'Care is not a solo effort. Authorised family members and primary caretakers coordinate collaboratively through a private, invite-secured Circle.',
       bullets: [
-        'Elder invites family members and caretakers with a unique passcode',
+        'Elder invites family members and caretakers with single-use invite codes',
         'Caretakers manage prescriptions, daily times, and medication instructions',
         'Family members view live dose statuses from anywhere in the world',
       ],
@@ -591,11 +591,11 @@ export const LandingPage: React.FC = () => {
                 Elder creates a private care circle
               </h3>
               <p className="text-sm text-[#52605C] leading-relaxed">
-                The elder creates their profile and generates a unique Circle ID and Passcode to invite designated family members and primary caretakers.
+                The elder creates their profile and gets a Circle ID, then generates a single-use invite code for each designated family member and primary caretaker.
               </p>
               <div className="pt-2 flex items-center gap-2 text-xs font-medium text-[#173F35]">
                 <ShieldCheck className="w-4 h-4 text-[#6C9B8B]" />
-                <span>Passcode-verified member access</span>
+                <span>Invite-verified member access</span>
               </div>
             </Card>
 
@@ -1029,9 +1029,9 @@ export const LandingPage: React.FC = () => {
               <div className="w-12 h-12 rounded-[14px] bg-[#173F35] text-white flex items-center justify-center">
                 <KeyRound className="w-6 h-6 text-[#DCE9DF]" />
               </div>
-              <h3 className="text-xl font-bold text-[#173F35] font-heading">Passcode-Guarded Circles</h3>
+              <h3 className="text-xl font-bold text-[#173F35] font-heading">Invite-Guarded Circles</h3>
               <p className="text-sm text-[#52605C] leading-relaxed">
-                Care circles require an explicit Circle ID and matching passcode hash to join, preventing unauthorised access to patient profiles.
+                Care circles require an explicit Circle ID and a single-use invite code to join, preventing unauthorised access to patient profiles.
               </p>
             </Card>
 

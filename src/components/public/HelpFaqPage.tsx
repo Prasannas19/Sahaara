@@ -59,7 +59,7 @@ export const HelpFaqPage: React.FC = () => {
       items: [
         {
           q: 'How does an elder establish a Care Circle?',
-          a: 'During registration, choose "Create Circle (Elder)". Enter your name, account details, and preferred greeting. Sahaara automatically creates your private circle and generates a unique Circle ID and Passcode.',
+          a: 'During registration, choose "Create Circle (Elder)". Enter your name, account details, and preferred greeting. Sahaara automatically creates your private circle and gives you its Circle ID. You can then create a single-use invite code for each person you want to add from the Care Circle menu.',
         },
         {
           q: 'Where do I find my Circle ID to share with family?',
@@ -74,11 +74,11 @@ export const HelpFaqPage: React.FC = () => {
       items: [
         {
           q: 'How do family members or caretakers connect to an elder?',
-          a: 'Select "Join Existing Circle" on the signup page. Enter your details, paste the Circle ID provided by the elder, enter the Circle Passcode, and select your designated role (Caretaker or Family Viewer).',
+          a: 'Select "Join Existing Circle" on the signup page. Enter your details, paste the Circle ID provided by the elder or a caretaker, and enter the single-use invite code they created for you. Your invite code already sets your role (Caretaker or Family Viewer).',
         },
         {
-          q: 'What happens if I enter the wrong passcode?',
-          a: 'Sahaara verifies passcodes against cryptographic hashes stored in Cloud Firestore. If the passcode does not match, the join request is rejected immediately.',
+          q: 'What happens if I enter the wrong invite code?',
+          a: 'Each invite code is single-use and tied to one role. If the Circle ID or invite code does not match an unused invite, the join request is rejected immediately and you can ask the elder or caretaker for a fresh code.',
         },
       ],
     },
