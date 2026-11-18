@@ -1,5 +1,5 @@
 import { doc, getDoc, setDoc, collection, query, where, onSnapshot, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { Circle, Member } from '../types';
 import { hashPasscode } from '../utils/crypto';
 
