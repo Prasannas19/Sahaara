@@ -6,13 +6,29 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    function callerMemberRef() {
+      return /databases/$(database)/documents/members/$(request.auth.uid);
+    }
+
+    function callerMemberExists() {
+      return exists(callerMemberRef());
+    }
+
     function callerMember() {
-      return get(/databases/$(database)/documents/members/$(request.auth.uid)).data;
+      return get(callerMemberRef()).data;
     }
 
     // True when the caller's authoritative member doc places them in circleId.
     function inCircle(circleId) {
-      return isSignedIn() && callerMember().circleId == circleId;
+      return isSignedIn() && callerMemberExists() && callerMember().circleId == circleId;
+    }
+
+    function circleRef(circleId) {
+      return /databases/$(database)/documents/circles/$(circleId);
+    }
+
+    function inviteRef(circleId, inviteId) {
+      return /databases/$(database)/documents/circles/$(circleId)/invites/$(inviteId);
     }
 
     match /{document=**} {
@@ -20,51 +36,106 @@ service cloud.firestore {
     }
 
     // Circles collection
-    // Readable ONLY by members of that circle: keeps the passcode hash and
-    // the elder's details private to the circle. createdBy binds each circle
+    // Readable ONLY by members of that circle. createdBy binds each circle
     // to the account that created it; only that account may hold elder role.
     match /circles/{circleId} {
       allow read: if inCircle(circleId);
       allow create: if isSignedIn()
         && request.resource.data.circleId == circleId
         && request.resource.data.elderName is string
-        && request.resource.data.passcodeHash is string
+        && request.resource.data.elderName.size() <= 200
         && request.resource.data.createdBy == request.auth.uid
         && request.resource.data.keys().hasOnly(
-          ['circleId', 'elderName', 'passcodeHash', 'createdBy', 'createdAt', 'createdAtServer', 'backupCaretakerId']);
+          ['circleId', 'elderName', 'createdBy', 'createdAt', 'createdAtServer', 'backupCaretakerId']);
       allow update, delete: if false;
+
+      // Single-use, role-bound join invites. Only the circle's current
+      // elder/caretaker members may create, list or revoke them; family
+      // members cannot read invites at all, so an unused caretaker invite's
+      // credentials are never exposed to lower-privilege readers.
+      match /invites/{inviteId} {
+        allow get, list: if inCircle(circleId)
+          && callerMember().role in ['elder', 'caretaker'];
+        allow create: if inCircle(circleId)
+          && callerMember().role in ['elder', 'caretaker']
+          && request.resource.data.circleId == circleId
+          && request.resource.data.role in ['caretaker', 'family']
+          && request.resource.data.token is string
+          && request.resource.data.token.size() >= 8
+          && request.resource.data.token.size() <= 64
+          && request.resource.data.used == false
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.keys().hasOnly(
+            ['circleId', 'role', 'token', 'used', 'createdBy', 'createdAt', 'createdAtServer']);
+        // Consumption: only inside one atomic batched write that also
+        // creates the joiner's member doc, bound both ways via getAfter.
+        // A non-member marks the invite used exactly once (used false->true,
+        // usedBy == caller); the after-state member doc must match this
+        // circle, this invite, this invite's token and this invite's role.
+        allow update: if isSignedIn()
+          && !callerMemberExists()
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['used', 'usedBy'])
+          && resource.data.used == false
+          && request.resource.data.used == true
+          && request.resource.data.usedBy == request.auth.uid
+          && existsAfter(callerMemberRef())
+          && getAfter(callerMemberRef()).data.circleId == circleId
+          && getAfter(callerMemberRef()).data.inviteId == inviteId
+          && getAfter(callerMemberRef()).data.inviteToken == resource.data.token
+          && getAfter(callerMemberRef()).data.role == resource.data.role;
+        allow delete: if inCircle(circleId)
+          && callerMember().role in ['elder', 'caretaker'];
+      }
     }
 
     // Members collection
-    // Joining a circle requires proving knowledge of the circle passcode:
-    // the client sends joinProof = hashPasscode(passcode) and the server
-    // compares it with the circle's stored passcodeHash. Without the
-    // passcode nobody can add themselves to a circle. The elder role is
-    // reserved for the circle's creator. joinProof is transient: the client
-    // removes it immediately after the write and updates may never set it.
+    // Two create paths, nothing else:
+    //  (a) elder bootstraps a circle the same account just created
+    //      (createdBy-bound; legacy circles without createdBy already have
+    //      their elder member doc and can never gain a second one);
+    //  (b) caretaker/family join with a single-use invite consumed in the
+    //      same atomic write (getAfter-bound both ways, see invites rules).
     match /members/{uid} {
       allow read: if isSignedIn() && (
         request.auth.uid == uid ||
-        callerMember().circleId == resource.data.circleId
+        (callerMemberExists() && callerMember().circleId == resource.data.circleId)
       );
       allow create: if isSignedIn()
         && request.auth.uid == uid
         && request.resource.data.memberId == uid
-        && request.resource.data.role in ['elder', 'caretaker', 'family']
         && request.resource.data.circleId is string
-        && request.resource.data.keys().hasOnly(
-          ['memberId', 'circleId', 'name', 'email', 'phone', 'role', 'status', 'joinProof', 'createdAtServer'])
-        && exists(/databases/$(database)/documents/circles/$(request.resource.data.circleId))
-        && get(/databases/$(database)/documents/circles/$(request.resource.data.circleId)).data.passcodeHash == request.resource.data.joinProof
-        && (request.resource.data.role != 'elder'
-          || get(/databases/$(database)/documents/circles/$(request.resource.data.circleId)).data.createdBy == request.auth.uid);
-      // Only profile fields may change. Role, circle, identity and every
-      // privileged or proof field are immutable: any change to them appears
-      // in affectedKeys and is rejected.
+        && request.resource.data.name is string
+        && request.resource.data.name.size() > 0
+        && request.resource.data.name.size() <= 200
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.status in ['active', 'invited']
+        && (
+          (
+            request.resource.data.role == 'elder'
+            && request.resource.data.keys().hasOnly(
+              ['memberId', 'circleId', 'name', 'email', 'phone', 'role', 'status', 'createdAtServer'])
+            && exists(circleRef(request.resource.data.circleId))
+            && get(circleRef(request.resource.data.circleId)).data.createdBy == request.auth.uid
+          ) || (
+            request.resource.data.role in ['caretaker', 'family']
+            && request.resource.data.inviteId is string
+            && request.resource.data.inviteToken is string
+            && request.resource.data.keys().hasOnly(
+              ['memberId', 'circleId', 'name', 'email', 'phone', 'role', 'status', 'inviteId', 'inviteToken', 'createdAtServer'])
+            && existsAfter(inviteRef(request.resource.data.circleId, request.resource.data.inviteId))
+            && getAfter(inviteRef(request.resource.data.circleId, request.resource.data.inviteId)).data.used == true
+            && getAfter(inviteRef(request.resource.data.circleId, request.resource.data.inviteId)).data.usedBy == request.auth.uid
+            && getAfter(inviteRef(request.resource.data.circleId, request.resource.data.inviteId)).data.token == request.resource.data.inviteToken
+            && getAfter(inviteRef(request.resource.data.circleId, request.resource.data.inviteId)).data.role == request.resource.data.role
+          )
+        );
+      // Only profile fields may change. Role, circle, identity, invite
+      // binding and any privileged flag are immutable: any change to them
+      // appears in affectedKeys and is rejected.
       allow update: if isSignedIn()
         && request.auth.uid == uid
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'phone', 'joinProof'])
-        && !request.resource.data.keys().hasAny(['joinProof']);
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'phone']);
       allow delete: if false;
     }
 
