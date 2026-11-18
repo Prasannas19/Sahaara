@@ -218,9 +218,9 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
         </button>
       </div>
 
-      <div className="max-w-5xl w-full mx-auto bg-white rounded-[24px] shadow-[0_12px_40px_rgba(23,63,53,0.06)] border border-[#DCE9DF] overflow-hidden grid grid-cols-1 lg:grid-cols-12 lg:min-h-[620px]">
+      <div className="max-w-5xl w-full mx-auto bg-white rounded-[24px] shadow-[0_12px_40px_rgba(23,63,53,0.06)] border border-[#DCE9DF] overflow-hidden grid grid-cols-1 lg:grid-cols-12 sm:min-h-[620px]">
         {/* LEFT PANEL: Forest-Green Brand Panel (CogniCrew structural composition) */}
-        <div className="hidden lg:flex lg:col-span-5 bg-[#173F35] text-white p-6 sm:p-10 lg:p-12 flex-col justify-between relative overflow-hidden text-left">
+        <div className="hidden sm:flex lg:col-span-5 bg-[#173F35] text-white p-6 sm:p-10 lg:p-12 flex-col justify-between relative overflow-hidden text-left">
           <div className="absolute inset-0 bg-[radial-gradient(#DCE9DF_1px,transparent_1px)] [background-size:24px_24px] opacity-10 pointer-events-none" />
 
           <div className="relative z-10 space-y-5">
@@ -270,7 +270,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
         {/* RIGHT PANEL: Warm-White / Ivory Form Surface */}
         <div className="lg:col-span-7 p-6 sm:p-10 lg:p-12 flex flex-col justify-center text-left bg-white">
           {/* Compact brand header shown only on phones, where the marketing panel is hidden */}
-          <div className="lg:hidden text-center mb-6">
+          <div className="sm:hidden text-center mb-6">
             <div className="flex justify-center mb-2">
               <BrandLogo variant="horizontal" size="md" showTagline={false} />
             </div>
