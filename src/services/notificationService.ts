@@ -8,7 +8,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { ReminderLog, DoseSlot, Appointment, Member } from '../types';
 import { sendTransactionalEmail } from './emailService';
 
