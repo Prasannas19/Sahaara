@@ -10,7 +10,7 @@ import {
   getDocs,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { Medication, Role } from '../types';
 import { recordCareActivity } from './activityService';
 
