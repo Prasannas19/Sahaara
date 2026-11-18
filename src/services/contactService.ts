@@ -1,5 +1,5 @@
 import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { ContactInquiry } from '../types';
 
 export interface SubmitContactInput {
