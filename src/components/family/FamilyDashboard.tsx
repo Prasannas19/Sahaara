@@ -167,7 +167,7 @@ export const FamilyDashboard: React.FC<FamilyDashboardProps> = ({
                   <Clock className="w-5 h-5 text-[#173F35]" />
                   <span>Today's Schedule &amp; Recorded Outcomes</span>
                 </h3>
-                <span className="text-xs text-[#52605C] font-semibold">{slots.length} scheduled</span>
+                <span className="text-xs text-[#52605C] font-semibold shrink-0 pl-2">{slots.length} scheduled</span>
               </div>
 
               {slots.length === 0 ? (
@@ -179,7 +179,7 @@ export const FamilyDashboard: React.FC<FamilyDashboardProps> = ({
                   {slots.map((slot) => (
                     <div
                       key={slot.slotId}
-                      className="p-5 rounded-[16px] bg-white border border-[#DCE9DF] shadow-xs flex items-center justify-between gap-4"
+                      className="p-5 rounded-[16px] bg-white border border-[#DCE9DF] shadow-xs flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
