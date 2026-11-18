@@ -158,7 +158,7 @@ export const ContactPage: React.FC = () => {
                 <span>Security &amp; Privacy Standards</span>
               </div>
               <p className="text-xs text-[#52605C] leading-relaxed">
-                Your messages and health questions are handled in strict confidentiality. Inquiries are stored in private, protected Firestore storage and accessible only by authorized support coordinators.
+                Your messages and health questions are handled in strict confidentiality. Inquiries are stored in private, protected Firestore storage and accessible only by authorised support coordinators.
               </p>
             </Card>
           </div>
