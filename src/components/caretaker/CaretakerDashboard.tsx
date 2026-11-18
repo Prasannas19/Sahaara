@@ -740,7 +740,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
           {/* ACTIVE CARE HANDOFF BANNER (IF ANY) */}
           {activeAlerts.length > 0 && (
             <div className="p-6 rounded-[20px] bg-[#FDF2E9] border-2 border-[#FDBA74] space-y-3">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                 <div className="flex items-center gap-2.5 text-[#9A3412]">
                   <ShieldAlert className="w-6 h-6 shrink-0" />
                   <h3 className="text-lg font-bold font-heading">
@@ -808,7 +808,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
                 {slots.slice(0, 4).map((slot) => (
                   <div
                     key={slot.slotId}
-                    className="p-4 rounded-[14px] bg-white border border-[#DCE9DF] flex items-center justify-between gap-3"
+                    className="p-4 rounded-[14px] bg-white border border-[#DCE9DF] flex flex-col items-start gap-2.5 sm:flex-row sm:items-center sm:justify-between sm:gap-3"
                   >
                     <div>
                       <div className="font-bold text-xs text-[#173F35] flex items-center gap-2">
@@ -1167,7 +1167,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
               {slots.map((slot) => (
                 <div key={slot.slotId} className="p-4 sm:p-5 flex items-center justify-between gap-4">
                   <div className="space-y-1">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="px-2 py-0.5 rounded bg-[#EEF4EF] text-[#173F35] text-xs font-bold">
                         {slot.scheduledTimeStr}
                       </span>
@@ -1427,7 +1427,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
                   .map((ev) => (
                     <div key={ev.eventId} className="p-4 flex items-center justify-between gap-4 text-xs">
                       <div className="space-y-1">
-                        <div className="flex items-center gap-2">
+                        <div className="flex flex-wrap items-center gap-2">
                           <span className="font-bold text-sm text-[#173F35]">{ev.medicationId}</span>
                           <StatusBadge status={ev.status} size="sm" />
                         </div>
@@ -1528,10 +1528,10 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
                 variant="primary"
                 size="normal"
                 onClick={exportMedicationReportCSV}
-                className="text-xs font-bold"
+                className="text-xs font-bold shrink-0"
               >
-                <Download className="w-4 h-4 mr-1.5" />
-                <span>Export CSV Report</span>
+                <Download className="w-4 h-4 mr-1.5 shrink-0" />
+                <span className="whitespace-nowrap">Export CSV Report</span>
               </Button>
             </div>
 
@@ -1988,7 +1988,7 @@ export const CaretakerDashboard: React.FC<CaretakerDashboardProps> = ({
               onChange={(e) => setAckOutcome(e.target.value as CareAlertOutcome)}
               options={[
                 { label: 'Confirmed Taken (verified with elder)', value: 'confirmed_taken' },
-                { label: 'Confirmed Skipped (authorized skip)', value: 'confirmed_skipped' },
+                { label: 'Confirmed Skipped (authorised skip)', value: 'confirmed_skipped' },
                 { label: 'Refused by Elder (requires care review)', value: 'refused' },
                 { label: 'Still Uncertain (will check again)', value: 'still_uncertain' },
                 { label: 'Unable to Contact Elder', value: 'unable_to_contact' },
