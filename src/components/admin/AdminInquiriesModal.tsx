@@ -27,6 +27,7 @@ export const AdminInquiriesModal: React.FC<AdminInquiriesModalProps> = ({
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'new' | 'reviewed'>('all');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [denied, setDenied] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -45,6 +46,7 @@ export const AdminInquiriesModal: React.FC<AdminInquiriesModalProps> = ({
       },
       (err) => {
         console.error('Error fetching support inquiries:', err);
+        setDenied(true);
         setLoading(false);
       }
     );
@@ -78,6 +80,21 @@ export const AdminInquiriesModal: React.FC<AdminInquiriesModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Support Inquiries Administration">
       <div className="space-y-4 text-left max-h-[75vh] flex flex-col">
+        {denied ? (
+          <div className="py-12 text-center space-y-3">
+            <Inbox className="w-10 h-10 text-[#52605C]/40 mx-auto" />
+            <p className="text-sm font-bold text-[#173F35]">Support inbox unavailable</p>
+            <p className="text-xs text-[#52605C] leading-relaxed max-w-xs mx-auto">
+              The support inbox is currently restricted to verified administrators only. This is a security restriction, not a problem with the app.
+            </p>
+            <div className="pt-2 flex justify-center">
+              <Button variant="secondary" size="normal" onClick={onClose} className="text-xs font-bold">
+                Close
+              </Button>
+            </div>
+          </div>
+        ) : (
+          <>
         <p className="text-xs text-[#52605C] leading-relaxed">
           Review and coordinate submitted contact messages, feedback, and technical support requests. Protected by server security rules.
         </p>
@@ -201,6 +218,8 @@ export const AdminInquiriesModal: React.FC<AdminInquiriesModalProps> = ({
             Close Console
           </Button>
         </div>
+          </>
+        )}
       </div>
     </Modal>
   );
