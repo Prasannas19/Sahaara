@@ -1,7 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { onAuthStateChanged, signOut, type User } from 'firebase/auth';
 import { auth } from '../firebase/config';
-import { getMember, getCircle } from '../services/circleService';
 import type { Member, Circle } from '../types';
 
 interface AuthContextType {
@@ -23,6 +22,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const fetchMemberAndCircle = async (uid: string) => {
     try {
+      // Loaded on demand so signed-out visitors never download Firestore.
+      const { getMember, getCircle } = await import('../services/circleService');
       const memberDoc = await getMember(uid);
       if (memberDoc) {
         setMember(memberDoc);
