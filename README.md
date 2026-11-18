@@ -1,6 +1,6 @@
 # Sahaara — Elderly Care & Medication Management Platform
 
-> **Live Deployment:** [https://sahaara-5c835.web.app](https://sahaara-5c835.web.app)  
+> **Live Deployment:** [https://sahaara-5c835.web.app](https://sahaara-5c835.web.app) 
 > **Firebase Project ID:** `sahaara-5c835` (Region: `asia-south1` Mumbai)
 
 ---
@@ -66,80 +66,80 @@ A **Care Circle** is a private, isolated care enclave scoped to a single elderly
 
 ### Elder Dashboard (7 Sub-Navigation Sections)
 1. **Today & Daily Progress:**
-   - Real-time progress bar (`X / Y completed`).
-   - Prominent **Next Medication Due Hero Card** with meal instructions.
-   - Three large 58px high-contrast accessibility action keys:
-     - `I Took It` (Persists dose confirmation).
-     - `Skip Dose` (Persists documented clinical skip).
-     - `Not Sure` (Immediately triggers caretaker check).
-   - **Interactive Demonstration Banner:** Always-available 1-click trigger to load realistic multi-medication demo routines.
+ - Real-time progress bar (`X / Y completed`).
+ - Prominent **Next Medication Due Hero Card** with meal instructions.
+ - Three large 58px high-contrast accessibility action keys:
+ - `I Took It` (Persists dose confirmation).
+ - `Skip Dose` (Persists documented clinical skip).
+ - `Not Sure` (Immediately triggers caretaker check).
+ - **Interactive Demonstration Banner:** Always-available 1-click trigger to load realistic multi-medication demo routines.
 2. **My Medicines:**
-   - Visual prescription cards detailing dosages, meal instructions, and administration times (read-only for elder safety).
+ - Visual prescription cards detailing dosages, meal instructions, and administration times (read-only for elder safety).
 3. **My Medication History:**
-   - Chronological log of previous dose events with status badges and actor attribution.
+ - Chronological log of previous dose events with status badges and actor attribution.
 4. **Appointments:**
-   - Upcoming clinic visits, doctor names, clinics, and "What to bring" preparation notes.
+ - Upcoming clinic visits, doctor names, clinics, and "What to bring" preparation notes.
 5. **Care Circle:**
-   - Visual directory of verified family members and caretakers supporting the elder.
+ - Visual directory of verified family members and caretakers supporting the elder.
 6. **I Need Help:**
-   - One-tap emergency contact card with direct telephone dialling (`tel:`) and urgent help request dispatch.
+ - One-tap emergency contact card with direct telephone dialling (`tel:`) and urgent help request dispatch.
 7. **My Privacy & Access:**
-   - Transparent, plain-language explanation of medical data encryption, circle isolation, and role restrictions.
+ - Transparent, plain-language explanation of medical data encryption, circle isolation, and role restrictions.
 8. **Digital Pillbox Organiser:**
-   - Visual 4-period compartment organizer (Morning, Afternoon, Evening, Bedtime) with completion checkmarks.
+ - Visual 4-period compartment organizer (Morning, Afternoon, Evening, Bedtime) with completion checkmarks.
 9. **Accessibility & Audio Read-Aloud:**
-   - Native Web Speech API integration (`window.speechSynthesis`) that reads out current adherence and upcoming dose details in natural voice.
-   - 100%, 115%, and 130% segmented font-size scaling.
+ - Native Web Speech API integration (`window.speechSynthesis`) that reads out current adherence and upcoming dose details in natural voice.
+ - 100%, 115%, and 130% segmented font-size scaling.
 
 ---
 
 ### Caretaker Clinical Console (11 Sub-Navigation Sections)
 1. **Overview & Adherence Summary:**
-   - Key metric cards (Adherence rate %, Unresolved handoffs, Active prescriptions, Pending doses today, Upcoming doctor visits).
-   - Active Care Handoff urgency banner.
+ - Key metric cards (Adherence rate %, Unresolved handoffs, Active prescriptions, Pending doses today, Upcoming doctor visits).
+ - Active Care Handoff urgency banner.
 2. **Care Handoff (Core Differentiator):**
-   - Active unconfirmed follow-up cards with elapsed time indicators.
-   - Comprehensive resolution modal with 5 clinical outcomes and notes.
-   - Reassurance empty-state card ("All Care Handoffs Resolved").
-   - Resolution history audit log.
+ - Active unconfirmed follow-up cards with elapsed time indicators.
+ - Comprehensive resolution modal with 5 clinical outcomes and notes.
+ - Reassurance empty-state card ("All Care Handoffs Resolved").
+ - Resolution history audit log.
 3. **Medication Management:**
-   - Full prescription CRUD (add, edit, pause, activate, archive).
-   - 24-hour administration time picker with multi-dose capability.
-   - Meal timing configuration (`Independent`, `With meal`, `Before meal`, `After meal`).
-   - Days-of-week active filter.
+ - Full prescription CRUD (add, edit, pause, activate, archive).
+ - 24-hour administration time picker with multi-dose capability.
+ - Meal timing configuration (`Independent`, `With meal`, `Before meal`, `After meal`).
+ - Days-of-week active filter.
 4. **Schedule & Pillbox:**
-   - Daily schedule timeline coupled with the 4-period Digital Pillbox.
+ - Daily schedule timeline coupled with the 4-period Digital Pillbox.
 5. **Dose Monitoring:**
-   - Real-time table of all doses due today, showing recording actor (`elder` vs `caretaker`) and exact timestamp.
+ - Real-time table of all doses due today, showing recording actor (`elder` vs `caretaker`) and exact timestamp.
 6. **Appointments:**
-   - Medical visit scheduler (Doctor, clinic, date, time, location, purpose, prep notes).
-   - **Doctor Visit Preparation Checklist:** Interactive, toggleable checklist allowing caretakers to track laboratory logs, prescription renewal questions, and physician topics.
+ - Medical visit scheduler (Doctor, clinic, date, time, location, purpose, prep notes).
+ - **Doctor Visit Preparation Checklist:** Interactive, toggleable checklist allowing caretakers to track laboratory logs, prescription renewal questions, and physician topics.
 7. **Medication History:**
-   - Comprehensive historical table with filter by outcome (`All`, `Taken`, `Skipped`, `Not Sure`).
+ - Comprehensive historical table with filter by outcome (`All`, `Taken`, `Skipped`, `Not Sure`).
 8. **Care Circle & Permissions:**
-   - Directory of circle members with roles, UID references, and permissions.
+ - Directory of circle members with roles, UID references, and permissions.
 9. **Reports & Export:**
-   - One-click **CSV Report Export** generating downloadable `.csv` files scoped to the Care Circle.
+ - One-click **CSV Report Export** generating downloadable `.csv` files scoped to the Care Circle.
 10. **Notifications & Email Status:**
-    - Real-time dispatch audit logs with transparent disclosure of in-app fallback status.
+ - Real-time dispatch audit logs with transparent disclosure of in-app fallback status.
 11. **Activity & Audit Log:**
-    - Immutable, chronological append-only audit trail logging every dose confirmation, appointment change, and handoff resolution.
+ - Immutable, chronological append-only audit trail logging every dose confirmation, appointment change, and handoff resolution.
 12. **Pill Stock & Refill Tracking:**
-    - Pill inventory counter, remaining days of supply estimate (`stock / dosesPerDay`), `< 7 days` low-stock warning, and 1-click `+ Refill (+30)` button.
+ - Pill inventory counter, remaining days of supply estimate (`stock / dosesPerDay`), `< 7 days` low-stock warning, and 1-click `+ Refill (+30)` button.
 
 ---
 
 ### Family Dashboard (5 Read-Only Sections)
 1. **Family Overview:**
-   - Peace-of-mind summary banner, today's adherence completion bar, Digital Pillbox, and today's doses.
+ - Peace-of-mind summary banner, today's adherence completion bar, Digital Pillbox, and today's doses.
 2. **Care Timeline:**
-   - Real-time read-only stream of all care events.
+ - Real-time read-only stream of all care events.
 3. **Upcoming Appointments:**
-   - Clinic consultation schedule with preparation instructions.
+ - Clinic consultation schedule with preparation instructions.
 4. **Alerts & Follow-ups:**
-   - Read-only status of care alerts and caretaker resolutions.
+ - Read-only status of care alerts and caretaker resolutions.
 5. **Medication History:**
-   - Chronological historical log of dose outcomes.
+ - Chronological historical log of dose outcomes.
 - **Strict Role Enforcement:** Family members cannot add prescriptions, alter schedules, or acknowledge handoffs (enforced at both UI and Cloud Firestore rule levels).
 
 ---
@@ -258,19 +258,19 @@ Catalyst/Hackathon-Project/
 Sahaara adheres strictly to healthcare least-privilege security principles:
 
 1. **Circle Data Isolation:**
-   Every document in `medications`, `doseEvents`, `appointments`, `careAlerts`, and `careActivities` contains a `circleId` attribute. Firestore rules enforce:
+ Every document in `medications`, `doseEvents`, `appointments`, `careAlerts`, and `careActivities` contains a `circleId` attribute. Firestore rules enforce:
    ```
    callerMember().circleId == resource.data.circleId
    ```
-   Users cannot read or query data from any circle other than their own.
+ Users cannot read or query data from any circle other than their own.
 2. **Server-Side Role Separation:**
-   - **Elders & Caretakers:** Permitted to record dose events and schedule appointments.
-   - **Caretakers:** Sole authority to add, update, or archive medications, and resolve Care Handoff follow-ups.
-   - **Family Viewers:** Enforced **read-only** by Firestore security rules. Any attempt to write a medication, appointment, or dose status results in immediate `PERMISSION_DENIED` (verified in automated live test suite 7).
+ - **Elders & Caretakers:** Permitted to record dose events and schedule appointments.
+ - **Caretakers:** Sole authority to add, update, or archive medications, and resolve Care Handoff follow-ups.
+ - **Family Viewers:** Enforced **read-only** by Firestore security rules. Any attempt to write a medication, appointment, or dose status results in immediate `PERMISSION_DENIED` (verified in automated live test suite 7).
 3. **Immutable Audit Trail:**
-   The `careActivities` collection permits document creation by circle members, but **strictly forbids `update` and `delete`**. Historical records cannot be altered or purged by ordinary users.
+ The `careActivities` collection permits document creation by circle members, but **strictly forbids `update` and `delete`**. Historical records cannot be altered or purged by ordinary users.
 4. **Deterministic Idempotency:**
-   Dose events are keyed as `${medicationId}_${scheduledAtISO}`. Repeated button taps or network retries merge into the single canonical document, guaranteeing zero duplicate dose records.
+ Dose events are keyed as `${medicationId}_${scheduledAtISO}`. Repeated button taps or network retries merge into the single canonical document, guaranteeing zero duplicate dose records.
 
 ---
 
@@ -294,7 +294,7 @@ Sahaara adheres strictly to healthcare least-privilege security principles:
    ```
 
 3. **Configure Environment:**
-   Create a `.env` file (or use the pre-configured Firebase project settings):
+ Create a `.env` file (or use the pre-configured Firebase project settings):
    ```env
    VITE_FIREBASE_API_KEY=your-api-key
    VITE_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
@@ -308,7 +308,7 @@ Sahaara adheres strictly to healthcare least-privilege security principles:
    ```bash
    npm run dev
    ```
-   Open `http://localhost:5173` in your browser.
+ Open `http://localhost:5173` in your browser.
 
 5. **Run Linting & Tests:**
    ```bash
@@ -363,21 +363,56 @@ Sahaara is hosted on **Firebase Hosting** with global SSL and CDN delivery.
 
 ---
 
-## 11. Current Limitations & Future Scope
+## 11. Free Alternatives to Firebase
+
+Firebase isn't compulsory for running your own copy of Sahaara. Hosting serves the website, while the backend handles login and stored data. You can replace either part, but replacing the backend needs code changes.
+
+### Website hosting
+
+[Vercel Hobby](https://vercel.com/docs/plans/hobby) and [Netlify Free](https://www.netlify.com/pricing) are options for hosting the frontend within their free-plan limits and terms.
+
+Build the app with `npm run build` and publish the generated `dist/` folder. You will also need to:
+
+- Configure SPA routing so opening a page directly serves `index.html`. Use Netlify's redirect rules or Vercel's rewrites. The existing `firebase.json` routing rules won't configure another host.
+- If you keep Firebase Authentication, add the new website domain to its authorized domains.
+
+Moving the frontend does not replace Firebase login or Firestore. Those still connect to your Firebase project.
+
+[GitHub Pages](https://docs.github.com/en/pages/getting-started-with-github-pages/about-github-pages) is another option for public repositories, but Sahaara needs extra base-path and routing setup there.
+
+### Backend and database
+
+[Supabase](https://supabase.com/pricing) is a useful alternative for newcomers. It offers a PostgreSQL database, authentication and APIs on a limited free plan. Free projects can pause after inactivity and need to be resumed from the dashboard. Check its current limits and [pause policy](https://supabase.com/docs/guides/platform/pausing) before choosing it.
+
+Sahaara does not currently include a Supabase backend. To use one, you would need to:
+
+- Replace the Firebase client setup and database and authentication calls.
+- Convert Firestore collections into PostgreSQL tables and migrate any existing data.
+- Replace Firestore security rules with suitable Row Level Security policies.
+- Plan how existing users will move over. Firebase accounts do not transfer automatically.
+- Deploy the frontend separately using a host such as those above.
+
+PostgreSQL alone is a database, not a complete replacement for Firebase. You would also need an API and authentication system. Supabase supplies those parts, so it is the simpler starting point.
+
+Sahaara's live demo currently uses Firebase's no-cost Spark plan. These alternatives are for people who want to adapt and deploy their own copy. Free services have limits and terms that can change, so check the linked official pages before deploying.
+
+---
+
+## 12. Current Limitations & Future Scope
 
 In the spirit of complete engineering honesty, the following items represent intentional scope boundaries for this release:
 
 1. **Email Delivery Fallback:** Automated reminder logs are recorded and displayed in-app; external SMTP delivery operates in in-app fallback mode unless an external email provider is configured.
 2. **Excluded Features (Not in this release):**
-   - Gemini / Google AI integration.
-   - Voice command transcription.
-   - Google Maps transit directions to clinics.
-   - Automated secondary caretaker escalation timers (excluded per spec).
-   - Complex tapering dosage calculations.
+ - Gemini / Google AI integration.
+ - Voice command transcription.
+ - Google Maps transit directions to clinics.
+ - Automated secondary caretaker escalation timers (excluded per spec).
+ - Complex tapering dosage calculations.
 
 ---
 
-## 12. Project Impact
+## 13. Project Impact
 
 Sahaara provides real healthcare impact by directly addressing the three pillars of home elderly care:
 1. **Elder Independence:** Seniors are empowered by intuitive, accessible interfaces with audio read-aloud support and big touch targets, removing fear of software mistakes.
@@ -386,4 +421,3 @@ Sahaara provides real healthcare impact by directly addressing the three pillars
 
 ---
 *Developed for the Google Cloud & Firebase Hackathon 2026.*
-
