@@ -4,6 +4,9 @@ export interface Circle {
   circleId: string;
   elderName: string;
   passcodeHash: string;
+  // UID of the account that created the circle; only that account may hold
+  // the elder role. Absent on circles created before this field existed.
+  createdBy?: string;
   createdAt: string;
   backupCaretakerId?: string;
 }
@@ -16,6 +19,9 @@ export interface Member {
   phone?: string;
   role: Role;
   status: 'active' | 'invited';
+  // Server-checked proof of passcode knowledge, written once at circle
+  // create/join. Equals the circle's stored passcodeHash.
+  joinProof?: string;
 }
 
 export type MealTiming = 'before_meal' | 'with_meal' | 'after_meal' | 'independent';
