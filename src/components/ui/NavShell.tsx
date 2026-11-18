@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import type { Member, Circle } from '../../types';
 import { AdminInquiriesModal } from '../admin/AdminInquiriesModal';
+import { InviteManager } from '../circle/InviteManager';
 
 export interface NavShellProps {
   member: Member;
@@ -209,7 +210,7 @@ export const NavShell: React.FC<NavShellProps> = ({
                     <span>Visit Sahaara Website</span>
                   </button>
 
-                  {member.role === 'caretaker' && (
+                  {member.isAdmin === true && (
                     <button
                       type="button"
                       onClick={() => {
@@ -341,13 +342,17 @@ export const NavShell: React.FC<NavShellProps> = ({
             </div>
 
             <p className="text-xs text-[#52605C] leading-relaxed">
-              Family members and caretakers need this Circle ID to connect their accounts with <strong>{circle.elderName}</strong>.
+              People join <strong>{circle.elderName}</strong>&rsquo;s circle with this Circle ID plus a single-use invite code. The Circle ID alone does not grant access.
             </p>
 
             <div className="p-4 rounded-[12px] bg-[#EEF4EF] border border-[#DCE9DF] space-y-2">
               <span className="text-xs font-bold text-[#52605C] uppercase tracking-wider">Circle ID</span>
               <p className="font-mono text-sm font-bold text-[#173F35] break-all select-all">{circle.circleId}</p>
             </div>
+
+            {(member.role === 'elder' || member.role === 'caretaker') && (
+              <InviteManager circle={circle} member={member} />
+            )}
 
             <div className="pt-2 flex gap-3">
               <button
