@@ -61,8 +61,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const reloadMember = async () => {
-    if (currentUser) {
-      await fetchMemberAndCircle(currentUser.uid);
+    // Use auth.currentUser instead of React state: right after signup the
+    // state value is still null, so the reload would silently no-op and the
+    // user would land on the sign-in form despite joining successfully.
+    const user = auth.currentUser ?? currentUser;
+    if (user) {
+      await fetchMemberAndCircle(user.uid);
     }
   };
 
