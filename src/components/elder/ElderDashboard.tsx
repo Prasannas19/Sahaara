@@ -615,7 +615,7 @@ export const ElderDashboard: React.FC<ElderDashboardProps> = ({ member, circle }
             <div className="bg-white rounded-[20px] border border-[#DCE9DF] overflow-hidden shadow-xs">
               <div className="divide-y divide-[#DCE9DF]">
                 {doseEvents.map((ev) => (
-                  <div key={ev.eventId} className="p-4 sm:p-5 flex items-center justify-between gap-4">
+                  <div key={ev.eventId} className="p-4 sm:p-5 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <span className="font-bold text-sm text-[#173F35]">{ev.medicationId}</span>
@@ -759,7 +759,7 @@ export const ElderDashboard: React.FC<ElderDashboardProps> = ({ member, circle }
             {circleMembers.map((m) => (
               <div
                 key={m.memberId}
-                className="p-5 rounded-[18px] bg-white border border-[#DCE9DF] shadow-xs flex items-center justify-between gap-4"
+                className="p-5 rounded-[18px] bg-white border border-[#DCE9DF] shadow-xs flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-[#173F35] text-white flex items-center justify-center font-bold text-lg">
