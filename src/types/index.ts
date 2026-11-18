@@ -3,7 +3,10 @@ export type Role = 'elder' | 'caretaker' | 'family';
 export interface Circle {
   circleId: string;
   elderName: string;
-  passcodeHash: string;
+  // Legacy field from the retired passcode-join flow. Inert: never read by
+  // the client or required by the security rules. Present only on circles
+  // created before single-use invites replaced the shared passcode.
+  passcodeHash?: string;
   // UID of the account that created the circle; only that account may hold
   // the elder role. Absent on circles created before this field existed.
   createdBy?: string;
@@ -19,9 +22,28 @@ export interface Member {
   phone?: string;
   role: Role;
   status: 'active' | 'invited';
-  // Server-checked proof of passcode knowledge, written once at circle
-  // create/join. Equals the circle's stored passcodeHash.
-  joinProof?: string;
+  // Set on caretaker/family members: which single-use invite was consumed
+  // when they joined. inviteToken is kept only so the security rules can
+  // verify it matches the invite at join time; it is dead afterwards.
+  inviteId?: string;
+  inviteToken?: string;
+  // Elevated support-inbox access. Never settable by clients under the
+  // security rules; reserved for a future verified admin identity.
+  isAdmin?: boolean;
+}
+
+// Single-use, role-bound invitation to join a circle. Created by the
+// circle's elder/caretaker members; consumed atomically with the joiner's
+// member doc in one batched write enforced by the security rules.
+export interface Invite {
+  inviteId: string;
+  circleId: string;
+  role: 'caretaker' | 'family';
+  token: string;
+  used: boolean;
+  usedBy?: string;
+  createdBy: string;
+  createdAt: string;
 }
 
 export type MealTiming = 'before_meal' | 'with_meal' | 'after_meal' | 'independent';
