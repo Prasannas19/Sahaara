@@ -7,7 +7,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { CareActivity, ActivityType, Role } from '../types';
 
 export async function recordCareActivity(params: {
