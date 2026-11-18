@@ -7,7 +7,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { DoseEvent, DoseSlot, DoseStatus, Medication, Role } from '../types';
 import { recordCareActivity } from './activityService';
 
