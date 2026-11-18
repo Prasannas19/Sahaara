@@ -86,7 +86,7 @@ export const NavShell: React.FC<NavShellProps> = ({
             </button>
             <div className="h-6 w-[1px] bg-[#DCE9DF] hidden sm:block" />
             <span
-              className={`text-xs px-2.5 py-1 rounded-[8px] font-bold tracking-wide uppercase ${roleConfigs.badgeClass}`}
+              className={`hidden sm:inline-block text-xs px-2.5 py-1 rounded-[8px] font-bold tracking-wide uppercase ${roleConfigs.badgeClass}`}
             >
               {roleConfigs.label}
             </span>
@@ -242,7 +242,7 @@ export const NavShell: React.FC<NavShellProps> = ({
           </div>
 
           {/* Mobile Navigation Trigger */}
-          <div className="flex items-center gap-2 md:hidden">
+          <div className="flex items-center gap-3 md:hidden">
             <button
               onClick={() => handleScaleChange(textScale === 1 ? 1.25 : 1)}
               className="min-h-[44px] px-3 text-xs font-bold rounded-[8px] bg-[#EEF4EF] border border-[#DCE9DF] text-[#173F35]"
