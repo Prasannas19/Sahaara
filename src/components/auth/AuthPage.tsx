@@ -4,10 +4,9 @@ import {
   createUserWithEmailAndPassword,
 } from 'firebase/auth';
 import { auth } from '../../firebase/config';
-import { generatePasscode } from '../../utils/crypto';
 import { BrandLogo } from '../ui/BrandLogo';
 import { Button } from '../ui/Button';
-import { Input, Select } from '../ui/Input';
+import { Input } from '../ui/Input';
 import { useRouter } from '../../context/RouterContext';
 import { useAuth } from '../../context/AuthContext';
 import {
@@ -42,14 +41,12 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
   const [showPassword, setShowPassword] = useState(false);
   const [name, setName] = useState('');
   const [elderName, setElderName] = useState('');
-  const [passcode] = useState(() => generatePasscode());
   const [joinCircleId, setJoinCircleId] = useState('');
-  const [joinPasscode, setJoinPasscode] = useState('');
-  const [joinRole, setJoinRole] = useState<'caretaker' | 'family'>('caretaker');
+  const [joinInviteCode, setJoinInviteCode] = useState('');
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [createdInfo, setCreatedInfo] = useState<{ circleId: string; passcode: string } | null>(null);
+  const [createdInfo, setCreatedInfo] = useState<{ circleId: string } | null>(null);
   const [copied, setCopied] = useState(false);
 
   const handleSignIn = async (e: React.FormEvent) => {
@@ -100,7 +97,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
       const uid = cred.user.uid;
       // Firestore is only needed once an account is actually being created,
       // so it is loaded here rather than with the sign-in page.
-      const { createCircleAndMember, joinCircleAndCreateMember } = await import('../../services/circleService');
+      const { createCircleAndMember } = await import('../../services/circleService');
 
       if (regType === 'create') {
         const elderNameToUse = elderName.trim() || name.trim();
@@ -109,24 +106,22 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
           userName: name.trim(),
           userEmail: email.trim(),
           elderName: elderNameToUse,
-          passcode: passcode.trim(),
         });
 
         setCreatedInfo({
           circleId: circle.circleId,
-          passcode: passcode.trim(),
         });
       } else {
-        if (!joinCircleId.trim() || !joinPasscode.trim()) {
-          throw new Error('Please enter both the Circle ID and Passcode to join.');
+        if (!joinCircleId.trim() || !joinInviteCode.trim()) {
+          throw new Error('Please enter both the Circle ID and the Invite Code shared with you.');
         }
-        await joinCircleAndCreateMember({
+        const { joinCircleWithInvite } = await import('../../services/inviteService');
+        await joinCircleWithInvite({
           userId: uid,
           userName: name.trim(),
           userEmail: email.trim(),
           circleId: joinCircleId.trim(),
-          passcode: joinPasscode.trim(),
-          role: joinRole,
+          inviteCode: joinInviteCode.trim(),
         });
         await reloadMember();
         navigate('/dashboard');
@@ -146,7 +141,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
 
   const copyDetails = () => {
     if (!createdInfo) return;
-    navigator.clipboard.writeText(`Sahaara Circle ID: ${createdInfo.circleId}\nPasscode: ${createdInfo.passcode}`);
+    navigator.clipboard.writeText(`Sahaara Circle ID: ${createdInfo.circleId}\nShare this ID with the people you want to invite, then send each of them their own invite code from the Care Circle menu.`);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -185,17 +180,17 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
       };
     }
 
-    // Join with passcode
+    // Join with a single-use invite code
     return {
       eyebrow: 'JOIN AN EXISTING CARE CIRCLE',
       heading: 'Be there for the people who matter.',
-      description: 'Join an existing Sahaara Care Circle using the invitation details shared by the elder or circle owner.',
+      description: 'Join an existing Sahaara Care Circle using the Circle ID and invite code shared by the elder or a caretaker in that circle.',
       cardTitle: 'Secure Invitation Verification',
-      cardSubtitle: 'Passcode-secured circle entry',
+      cardSubtitle: 'Single-use invite code entry',
       bullets: [
         'Caretaker: Help manage medication schedules, appointments and care follow-ups.',
         'Family Viewer: View authorised medication information, appointments and care activity.',
-        'Secure invitation: Access is granted only after verifying the Care Circle ID and passcode.',
+        'Secure invitation: Each invite code works exactly once, for one named role, and cannot be reused.',
       ],
       icon: Users,
     };
@@ -290,7 +285,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
                   Your Sahaara Circle is Ready!
                 </h3>
                 <p className="text-xs text-[#52605C] mt-2 leading-relaxed">
-                  Share these credentials with your designated caretakers and family members so they can join your care circle.
+                  You can now create a single-use invite code for each caretaker or family member from the Care Circle menu. Only someone with an invite code can join this circle.
                 </p>
               </div>
 
@@ -298,10 +293,6 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
                 <div>
                   <span className="text-xs font-semibold text-[#52605C] uppercase tracking-wider">Circle ID</span>
                   <p className="font-mono text-base font-bold text-[#173F35] break-all select-all">{createdInfo.circleId}</p>
-                </div>
-                <div>
-                  <span className="text-xs font-semibold text-[#52605C] uppercase tracking-wider">Passcode</span>
-                  <p className="font-mono text-2xl font-extrabold tracking-widest text-[#173F35] select-all">{createdInfo.passcode}</p>
                 </div>
               </div>
 
@@ -313,7 +304,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
                   className="w-full flex items-center justify-center gap-2 font-bold min-h-[48px]"
                 >
                   {copied ? <Check className="w-5 h-5 text-green-700" /> : <Copy className="w-5 h-5" />}
-                  <span>{copied ? 'Copied to Clipboard' : 'Copy Circle Invite Info'}</span>
+                  <span>{copied ? 'Copied to Clipboard' : 'Copy Circle ID'}</span>
                 </Button>
                 <Button
                   type="button"
@@ -460,7 +451,7 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
                         }`}
                       >
                         <KeyRound className="w-3.5 h-3.5" />
-                        <span>Join with Passcode</span>
+                        <span>Join with Invite Code</span>
                       </button>
                     </div>
                   </div>
@@ -518,19 +509,14 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
                         placeholder="Leave blank if registering for yourself"
                       />
 
-                      <div className="p-3.5 bg-[#EEF4EF] rounded-[10px] border border-[#DCE9DF] flex items-center justify-between">
-                        <div>
-                          <span className="text-[11px] font-bold text-[#173F35] uppercase tracking-wider block">Generated Circle Passcode</span>
-                          <span className="text-xs text-[#52605C]">Private 6-digit key for invited members</span>
-                        </div>
-                        <span className="font-mono text-base font-extrabold tracking-widest text-[#173F35] bg-white px-3 py-1 rounded-[6px] border border-[#DCE9DF]">
-                          {passcode}
-                        </span>
+                      <div className="p-3.5 bg-[#EEF4EF] rounded-[10px] border border-[#DCE9DF]">
+                        <span className="text-[11px] font-bold text-[#173F35] uppercase tracking-wider block">Invite-only circle</span>
+                        <span className="text-xs text-[#52605C]">After your circle is created, generate a single-use invite code for each person you want to add. People can only join with a valid code.</span>
                       </div>
                     </div>
                   )}
 
-                  {/* 6. JOIN WITH PASSCODE SPECIFIC FIELDS */}
+                  {/* 6. JOIN WITH INVITE CODE SPECIFIC FIELDS */}
                   {regType === 'join' && (
                     <div className="space-y-3 pt-1 border-t border-[#DCE9DF]/60 animate-in fade-in">
                       <Input
@@ -543,23 +529,17 @@ export const AuthPage: React.FC<AuthPageProps> = ({ initialMode = 'signin' }) =>
                       />
 
                       <Input
-                        label="Circle Passcode"
+                        label="Invite Code"
                         type="text"
-                        value={joinPasscode}
-                        onChange={(e) => setJoinPasscode(e.target.value)}
-                        placeholder="e.g. 749201"
+                        value={joinInviteCode}
+                        onChange={(e) => setJoinInviteCode(e.target.value)}
+                        placeholder="e.g. aB3dEf7H-1Q8N4R2W9TK3G6PJ-C"
                         required
                       />
 
-                      <Select
-                        label="Your Role in this Circle"
-                        value={joinRole}
-                        onChange={(e) => setJoinRole(e.target.value as 'caretaker' | 'family')}
-                        options={[
-                          { label: 'Caretaker (Manage schedules, alerts, appointments)', value: 'caretaker' },
-                          { label: 'Family Viewer (Read-only status & updates)', value: 'family' },
-                        ]}
-                      />
+                      <p className="text-xs text-[#52605C] leading-relaxed">
+                        Your invite code is single-use and already sets your role (caretaker or family viewer). Ask the elder or a caretaker in the circle if you need one.
+                      </p>
                     </div>
                   )}
 
