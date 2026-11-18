@@ -10,7 +10,7 @@ import {
   onSnapshot,
   serverTimestamp,
 } from 'firebase/firestore';
-import { db } from '../firebase/config';
+import { db } from '../firebase/db';
 import type { Appointment } from '../types';
 import { recordCareActivity } from './activityService';
 
